@@ -8,8 +8,8 @@ gc.collect()
 ssid = "wifi" #Nome da rede Wifi
 password = "senha" #senha do Wifi
 FREQUENCIA_MOTOR = 50
-INICIO_OPERACAO_MOTOR = 40
-MAXIMO_OPERACAO_MOTOR = 115
+INICIO_OPERACAO_MOTOR = 0
+MAXIMO_OPERACAO_MOTOR = 100
 
 
 station = network.WLAN(network.STA_IF)
@@ -33,26 +33,29 @@ def valor_relativo(given, start=INICIO_OPERACAO_MOTOR,end=MAXIMO_OPERACAO_MOTOR)
 
 
 #ALTERAR PINAGEM PARA A UTILIZADA
-leftPwm1 = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 1 RODA ESQUERDA - GIRA PARA TRÁS
-leftPwm2 = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 2 RODA ESQUERDA - GIRA PARA FRENTE
-rightPwm1 = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 1 RODA DIREITA - GIRA PARA TRÁS
-rightPwm2 = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 2 RODA DIREITA - GIRA PARA FRENTE
+leftPwm = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 1 RODA ESQUERDA - CONTROLA VELOCIDADE
+leftA = machine.Pin(31, machine.Pin.OUT)
+leftB = machine.Pin(31, machine.Pin.OUT)
+
+rightPwm = machine.PWM(machine.Pin((31)), freq = FREQUENCIA_MOTOR) # PWM 2 RODA DIREITA - CONTROLA VELOCIDADE
+rightA = machine.Pin(31, machine.Pin.OUT)
+rightB = machine.Pin(31, machine.Pin.OUT)
 
 while True:
-  leftPwm1Value = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/leftWeelPwm1.json")
-  leftPwm2Value = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/leftWeelPwm2.json")
-  rightPwm1Value = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/rightWeelPwm1.json")
-  rightPwm2Value = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/righttWeelPwm2.json")
-  
-  #Zerando valores pra não ocorrer curto
-  leftPwm1.duty(INICIO_OPERACAO_MOTOR)
-  leftPwm2.duty(INICIO_OPERACAO_MOTOR)
-  rightPwm1.duty(INICIO_OPERACAO_MOTOR)
-  rightPwm2.duty(INICIO_OPERACAO_MOTOR)
 
-  leftPwm1.duty(valor_relativo(leftPwm1Value))
-  leftPwm2.duty(valor_relativo(leftPwm2Value))
-  rightPwm1.duty(valor_relativo(rightPwm1Value))
-  rightPwm2.duty(valor_relativo(rightPwm2Value))
+  leftPwmValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/leftWeelPwm.json")
+  rightPwmValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/rightWeelPwm.json")
+  rightAValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/rightWeelA.json")
+  leftAValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/leftWeelA.json")
+  rightBValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/rightWeelB.json")
+  leftBValue = firebase.get("https://sumorobo-esp-heusi-default-rtdb.firebaseio.com/SumoRoboEsp/leftWeelB.json")
+  
+
+  leftPwm.duty(valor_relativo(int(leftPwmValue)))
+  rightPwm.duty(valor_relativo(int(rightPwmValue)))
+  rightA.value(int(rightAValue))
+  rightB.value(int(rightBValue))
+  leftA.value(int(leftAValue))
+  leftB.value(int(leftBValue))
 
 
