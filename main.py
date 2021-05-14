@@ -23,8 +23,9 @@ while station.isconnected() == False:
 print("Wifi conectado")
 print(station.ifconfig())
 
-def valor_relativo(given, relative, start=INICIO_OPERACAO_MOTOR,end=MAXIMO_OPERACAO_MOTOR):
-  #Recebe um valor de 0 a 50 e retorna o valor correto para a faixa do motor utilizado
+def valor_relativo(given, start=INICIO_OPERACAO_MOTOR,end=MAXIMO_OPERACAO_MOTOR):
+  #Recebe um valor de 0 a 50 e retorna o valor correto para a faixa do motor utilizado]
+  relative = 0
   numSteps = MAXIMO_OPERACAO_MOTOR - INICIO_OPERACAO_MOTOR
   stepSize = numSteps/50
   relative = start + given*stepSize
